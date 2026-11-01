@@ -109,3 +109,81 @@ html div.container {
 .br-none {
 	border-radius: 0!important;
 }
+
+.navbar-logo__column {
+	max-width: 140px;
+}
+
+.navbar-logo__toggle {
+	display: none;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: inherit;
+}
+
+.navbar-logo__toggle-icon {
+	position: relative;
+	display: block;
+	width: 18px;
+	height: 2px;
+	border-radius: 1px;
+	background: #fff;
+}
+
+.navbar-logo__toggle-icon::before,
+.navbar-logo__toggle-icon::after {
+	position: absolute;
+	left: 0;
+	width: 18px;
+	height: 2px;
+	border-radius: 1px;
+	background: #fff;
+	content: '';
+}
+
+.navbar-logo__toggle-icon::before {
+	top: -6px;
+}
+
+.navbar-logo__toggle-icon::after {
+	top: 6px;
+}
+
+.navbar-logo__desktop {
+	display: none;
+	width: 118px;
+	height: 30px;
+}
+
+.navbar-logo__mobile {
+	display: block;
+	width: 30px;
+	height: 30px;
+}
+
+.navbar-logo__mobile-wrapper {
+	margin-left: 40px;
+}
+
+@media (max-width: 1300px) {
+	.navbar-logo__toggle {
+		display: flex;
+		float: left;
+		height: 30px;
+		width: 30px;
+		cursor: pointer;
+	}
+}
+
+@media (min-width: 1301px) {
+	.navbar-logo__desktop {
+		display: block;
+	}
+
+	.navbar-logo__mobile {
+		display: none;
+	}
+}
