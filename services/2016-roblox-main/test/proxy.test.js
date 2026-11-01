@@ -1,31 +1,81 @@
-import { expect } from "chai";
 jest.mock('next/config', () => () => ({
   publicRuntimeConfig: {
     backend: {
-      baseUrl: 'https://www.roblox.com',
-    }
-  }
+      baseUrl: 'http://localhost:5000',
+      proxyEnabled: true,
+    },
+  },
 }));
 
-import { UrlUtilities } from "../pages/api/proxy";
+import proxyHandler, { UrlUtilities } from "../pages/api/proxy";
+import validateAndAddCookie from "../pages/api/validate-and-add-cookie";
 
-describe('UrlUtilities.IsSafe()', () => {
-  it('must return that a valid URL is safe', () => {
-    const result = UrlUtilities.isSafe('https://www.roblox.com/test/goodUrl');
-    expect(result).eq(true);
+describe('UrlUtilities.isSafe()', () => {
+  it('allows paths on the configured first-party API origin', () => {
+    expect(UrlUtilities.isSafe('http://localhost:5000/apisite/auth/v2/login')).toBe(true);
   });
-  it('must return that a valid uppercase URL is safe', () => {
-    const result = UrlUtilities.isSafe(('https://www.roblox.com/test/goodUrl').toUpperCase());
-    expect(result).eq(true);
+
+  it('normalizes URL casing', () => {
+    expect(UrlUtilities.isSafe('HTTP://LOCALHOST:5000/apisite/auth/v2/login')).toBe(true);
   });
-  it('must return that a valid URL on different subdomain is safe', () => {
-    const result = UrlUtilities.isSafe('https://api.roblox.com/test/goodUrl');
-    expect(result).eq(true);
-  });
-  it('must return that a similar but invalid url is NOT safe', () => {
-    for (const item of ['https://www.robloxlabs.com/test/badUrl', 'https://www.roblox.co/test/badUrl', 'https://www.roblox-com.com/test/badUrl']) {
-      const result = UrlUtilities.isSafe(item);
-      expect(result).eq(false);
+
+  it('rejects different origins, ports, and lookalike hosts', () => {
+    for (const url of [
+      'https://localhost:5000/apisite/auth/v2/login',
+      'http://localhost:5001/apisite/auth/v2/login',
+      'http://127.0.0.1:5000/apisite/auth/v2/login',
+      'http://localhost.example.test/apisite/auth/v2/login',
+    ]) {
+      expect(UrlUtilities.isSafe(url)).toBe(false);
     }
+  });
+
+  it('never allows Roblox or third-party origins', () => {
+    for (const url of [
+      'https://www.roblox.com/v2/login',
+      'https://auth.roblox.com/v2/login',
+      'https://api.example.test/v1/users',
+    ]) {
+      expect(UrlUtilities.isSafe(url)).toBe(false);
+    }
+  });
+
+  it('rejects malformed URLs and embedded credentials', () => {
+    expect(UrlUtilities.isSafe('not a url')).toBe(false);
+    expect(UrlUtilities.isSafe('http://user@localhost:5000/path')).toBe(false);
+  });
+});
+
+describe('proxy route', () => {
+  it('rejects Roblox targets before reading or forwarding the request body', async () => {
+    const response = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis(),
+    };
+
+    await proxyHandler({
+      method: 'POST',
+      query: { url: 'https://auth.roblox.com/v2/login' },
+    }, response);
+
+    expect(response.status).toHaveBeenCalledWith(403);
+    expect(response.json).toHaveBeenCalled();
+  });
+});
+
+describe('validate-and-add-cookie endpoint', () => {
+  it('rejects cookie login without setting a session cookie', () => {
+    const response = {
+      setHeader: jest.fn(),
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis(),
+    };
+
+    validateAndAddCookie({ method: 'POST' }, response);
+
+    expect(response.status).toHaveBeenCalledWith(410);
+    expect(response.setHeader).toHaveBeenCalledWith('Cache-Control', 'no-store');
+    expect(response.setHeader).not.toHaveBeenCalledWith('Set-Cookie', expect.anything());
+    expect(response.json).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
   });
 });

@@ -25,12 +25,11 @@ const AuthenticationStore = createContainer(() => {
       if (typeof result === 'string') {
         throw new Error('Unexpected Response');
       }
-      console.log(result)
       setUserId(result.id);
       setUsername(result.name);
       setIsAuthenticated(true);
       setIsPending(false);
-    }).catch(e => {
+    }).catch(() => {
       setIsPending(false);
     });
   }, []);
@@ -41,22 +40,22 @@ const AuthenticationStore = createContainer(() => {
     getRobux({ userId }).then((data) => {
       setRobux(data.robux || 0);
       setTix(data.tickets || 0);
-    }).catch(e => {
-      // what do we do here?
-      console.error('[error] robux error', e);
+    }).catch(() => {
+      setRobux(null);
+      setTix(null);
     });
     // Get notifications
     Promise.all([
-      getInboundTradeCount(),
-      getUnreadMessageCount(),
-      getFriendRequestCount(),
+      getInboundTradeCount().catch(() => 0),
+      getUnreadMessageCount().catch(() => 0),
+      getFriendRequestCount().catch(() => 0),
     ]).then(([inboundTradeCount, messageCount, friendRequestCount]) => {
       setNotificationCount({
         messages: messageCount,
         friendRequests: friendRequestCount,
         trades: inboundTradeCount,
-      })
-    })
+      });
+    });
   }, [userId]);
 
   return {

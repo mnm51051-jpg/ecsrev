@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { login } from '../../services/auth';
+import { getBaseUrl } from '../../lib/request';
 
 const useLoginModalStyles = createUseStyles({
   wrapper: {
@@ -54,49 +55,54 @@ const useLoginModalStyles = createUseStyles({
   },
 });
 
-const LoginModal = props => {
+const LoginModal = () => {
   const s = useLoginModalStyles();
   const userRef = useRef(null);
   const passRef = useRef(null);
-  const [locked, setLocked] = useState(null);
+  const [locked, setLocked] = useState(false);
   const [error, setError] = useState(null);
+
+  const onLoginSubmit = async event => {
+    event.preventDefault();
+    if (locked) return;
+
+    setError(null);
+    setLocked(true);
+    try {
+      await login({
+        username: userRef.current.value.trim(),
+        password: passRef.current.value,
+      });
+      window.location.reload();
+    } catch (loginError) {
+      setError(loginError.response?.data?.errors?.[0]?.message || loginError.response?.data?.message || loginError.message || 'Unable to sign in. Please try again.');
+    } finally {
+      setLocked(false);
+    }
+  };
 
   return <div className={s.wrapper}>
     <div className={s.card}>
-      {error && <p className='text-danger mb-0'>{error}</p>}
-      <input ref={userRef} className={`form-control ${s.input}`} type='text' placeholder='Username'></input>
-      <input ref={passRef} className={`form-control ${s.input}`} type='password' placeholder='Password'></input>
-      <div className='row'>
-        <div className='col-6'>
-          <button disabled={locked} className={`btn ${s.btnPrimary} ${s.btn}`} onClick={(e) => {
-            e.preventDefault();
-            setLocked(true);
-            const username = userRef.current.value;
-            const password = passRef.current.value;
-            login({ username, password }).then(userInfo => {
-              console.log(userInfo);
-              window.location.reload();
-            })
-              .catch(e => {
-                if (e.response && e.response.data) {
-                  setError(e.response.data.errors[0].message);
-                } else {
-                  setError(e.message);
-                }
-              })
-              .finally(() => {
-                setLocked(false);
-              })
-          }}>Log In</button>
+      <p className='small text-muted mb-2'>Use your Economy Simulator account. Never enter a Roblox password or session cookie.</p>
+      {error && <p role='alert' className='text-danger mb-0'>{error}</p>}
+      <form onSubmit={onLoginSubmit}>
+        <label className='form-label mb-0' htmlFor='nav-login-username'>Username</label>
+        <input id='nav-login-username' name='username' autoComplete='username' required disabled={locked} ref={userRef} className={`form-control ${s.input}`} type='text' />
+        <label className='form-label mb-0' htmlFor='nav-login-password'>Password</label>
+        <input id='nav-login-password' name='password' autoComplete='current-password' required disabled={locked} ref={passRef} className={`form-control ${s.input}`} type='password' />
+        <div className='row'>
+          <div className='col-6'>
+            <button type='submit' disabled={locked} className={`btn ${s.btnPrimary} ${s.btn}`}>Log In</button>
+          </div>
+          <div className='col-6'>
+            <a href={new URL('/auth/application', getBaseUrl()).toString()} className={`btn ${s.btnSecondary} ${s.btn}`}>Sign up</a>
+          </div>
         </div>
-        <div className='col-6'>
-          <button className={`btn ${s.btnSecondary} ${s.btn}`}>Sign up</button>
-        </div>
-      </div>
+      </form>
       <div className='row mt-2'>
         <div className='col-12'>
           <p>
-            <a className={s.forgotPass} href='/auth/password-reset'>Forgot Password?</a>
+            <a className={s.forgotPass} href={new URL('/auth/password-reset', getBaseUrl()).toString()}>Forgot Password?</a>
           </p>
         </div>
       </div>

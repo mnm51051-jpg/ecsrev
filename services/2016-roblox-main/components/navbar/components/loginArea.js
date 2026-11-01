@@ -2,8 +2,7 @@ import React from "react";
 import { createUseStyles } from "react-jss";
 import LoginModalStore from "../../../stores/loginModal";
 import LoginModal from "../../loginModal";
-import getFlag from "../../../lib/getFlag";
-import {useRouter} from "next/dist/client/router";
+import { getBaseUrl } from "../../../lib/request";
 
 const useLoginAreaStyles = createUseStyles({
   text: {
@@ -29,8 +28,7 @@ const useLoginAreaStyles = createUseStyles({
   },
 });
 
-const LoginArea = props => {
-  const Router = useRouter();
+const LoginArea = () => {
   const s = useLoginAreaStyles();
   const loginModalStore = LoginModalStore.useContainer();
 
@@ -39,29 +37,21 @@ const LoginArea = props => {
       <div className='row'>
         <div className='col-6'>
           <p className={s.text}>
-            <a className={s.link} >
+            <a className={s.link} href={new URL('/auth/application', getBaseUrl()).toString()}>
               Sign Up
             </a>
           </p>
         </div>
         <div className='col-6'>
           <p className={s.text}>
-            <a className={s.link} onClick={(e) => {
-              e.preventDefault();
-              if (getFlag('requireLoginThroughCookie', false)) {
-                if (getFlag('clientSideRenderingEnabled', false)) {
-                  Router.push('/login');
-                }else{
-                  window.location.href = '/login';
-                }
-                return;
-              }
+            <a className={s.link} href='/login' onClick={event => {
+              event.preventDefault();
               loginModalStore.setOpen(!loginModalStore.open);
             }}>
               Login
             </a>
           </p>
-          {loginModalStore.open && <LoginModal></LoginModal>}
+          {loginModalStore.open && <LoginModal />}
         </div>
       </div>
     </div>

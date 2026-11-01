@@ -11,12 +11,13 @@ const getBaseUrl = () => {
 }
 
 const getUrlWithProxy = (url) => {
-  if (config.publicRuntimeConfig.backend.proxyEnabled)
-    return '' + (url);
+  if (config.publicRuntimeConfig.backend.proxyEnabled && typeof window !== 'undefined') {
+    return `/api/proxy?url=${encodeURIComponent(url)}`;
+  }
   return url;
 }
 
-const request = async (method, url, data) => {
+const request = async (method, url, data, csrfRetries = 0) => {
   const isBrowser = typeof window !== 'undefined';
   try {
     let headers = {
@@ -41,9 +42,9 @@ const request = async (method, url, data) => {
   } catch (e) {
     if (e.response) {
       let resp = e.response;
-      if (resp.status === 403 && resp.headers['x-csrf-token']) {
+      if (resp.status === 403 && resp.headers['x-csrf-token'] && csrfRetries < 3) {
         _csrf = resp.headers['x-csrf-token'];
-        return await request(method, url, data);
+        return await request(method, url, data, csrfRetries + 1);
       }
     }
     if (isBrowser) {

@@ -1,15 +1,21 @@
-import { useEffect } from "react"
-import AuthenticationStore from "../stores/authentication"
+import { useEffect } from "react";
+import AuthenticationStore from "../stores/authentication";
 
-const IndexPage = props => {
+const IndexPage = () => {
   const auth = AuthenticationStore.useContainer();
-  useEffect(() => {
-    if (auth.isAuthenticated) {
-      window.location.href = '/home';
-    }
-  }, [auth.isAuthenticated]);
 
-  return null;
-}
+  useEffect(() => {
+    if (auth.isPending) return;
+    window.location.replace(auth.isAuthenticated ? "/home" : "/login");
+  }, [auth.isAuthenticated, auth.isPending]);
+
+  return (
+    <main className="container">
+      <p role="status" aria-live="polite">
+        Loading Economy Simulator…
+      </p>
+    </main>
+  );
+};
 
 export default IndexPage;

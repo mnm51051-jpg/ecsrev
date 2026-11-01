@@ -8,18 +8,19 @@
 
 2. Open a terminal
 
-3. Run `node ./util/create_config.js`. This will create a basic config.json file that you can edit later.
+3. Start the local .NET website/API from the repository root instructions and confirm it is reachable at [localhost:5000](http://localhost:5000). The generated frontend config uses this first-party API by default. If you use another backend, edit `config.json` to an API origin you control before building.
 
-4. Run `npm i`. This will install dependencies.
+4. Run `npm ci` to install the locked dependencies.
 
-5. This final step varies depending on your intentions:
+5. Choose a run mode:
 
     **Release:** Run `npm run build`, then `npm run start`
 
     **Debug/Dev:** Run `npm run dev`
 
+The frontend automatically creates an ignored `config.json` before development and production builds. Sign-in is for Economy Simulator accounts only; never enter a Roblox password or paste a Roblox session cookie into this site.
 
-6. Finally, you should be able to visit [localhost:3000](http://localhost:3000) in your browser to view the site.
+6. Visit [localhost:3000](http://localhost:3000) in your browser. Account, catalog, and game features require the local backend and its configured services to be running.
 
 ---
 
