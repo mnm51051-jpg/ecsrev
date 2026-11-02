@@ -2,12 +2,52 @@ import axios from 'axios';
 import config from '../lib/config';
 let _csrf = '';
 
-const getFullUrl = (apiSite, fullUrl) => {
-  return config.publicRuntimeConfig.backend.apiFormat.replace(/\{0\}/g, apiSite).replace(/\{1\}/g, fullUrl);
-}
+const getVercelOrigin = () => {
+  const domain = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
+  if (typeof domain !== 'string' || domain.trim() === '') return '';
+  const normalizedDomain = domain.trim().replace(/^https?:\/\//i, '').replace(/\/+$/, '');
+  return normalizedDomain ? `https://${normalizedDomain}` : '';
+};
 
 const getBaseUrl = () => {
-  return config.publicRuntimeConfig.backend.baseUrl;
+  const backend = config.publicRuntimeConfig.backend;
+  if (backend.sameOriginBackend && typeof window !== 'undefined') {
+    return window.location.origin;
+  }
+  if (typeof backend.baseUrl === 'string' && backend.baseUrl.trim()) {
+    return backend.baseUrl.replace(/\/+$/, '');
+  }
+  return backend.sameOriginBackend ? getVercelOrigin() : '';
+};
+
+const getBackendUrl = url => {
+  const rawUrl = String(url || '');
+  const backend = config.publicRuntimeConfig.backend;
+  const isAbsoluteUrl = /^https?:\/\//i.test(rawUrl);
+
+  if (backend.sameOriginBackend && typeof window !== 'undefined') {
+    if (rawUrl.startsWith('//')) return rawUrl;
+    if (isAbsoluteUrl) {
+      const target = new URL(rawUrl);
+      const isLocalhost = target.hostname === 'localhost' || target.hostname === '127.0.0.1';
+      if (isLocalhost || target.origin === window.location.origin) {
+        return `${target.pathname}${target.search}${target.hash}`;
+      }
+      return rawUrl;
+    }
+    return rawUrl.startsWith('/') ? rawUrl : `/${rawUrl}`;
+  }
+
+  if (isAbsoluteUrl || rawUrl.startsWith('//')) return rawUrl;
+  const path = rawUrl.startsWith('/') ? rawUrl : `/${rawUrl}`;
+  const baseUrl = getBaseUrl();
+  if (!baseUrl) return path;
+  return new URL(path, `${baseUrl.replace(/\/+$/, '')}/`).toString();
+};
+
+const getFullUrl = (apiSite, fullUrl) => {
+  const apiUrl = config.publicRuntimeConfig.backend.apiFormat.replace(/\{0\}/g, apiSite).replace(/\{1\}/g, fullUrl);
+  return getBackendUrl(apiUrl);
 }
 
 const getUrlWithProxy = (url) => {
@@ -67,6 +107,7 @@ export default request;
 
 export {
   getFullUrl,
+  getBackendUrl,
   getBaseUrl,
   getUrlWithProxy,
 }

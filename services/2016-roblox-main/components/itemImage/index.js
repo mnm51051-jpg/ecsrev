@@ -1,5 +1,4 @@
 import { createUseStyles } from "react-jss";
-import { getBaseUrl } from "../../lib/request";
 import ThumbnailStore from "../../stores/thumbnailStore";
 import {reportImageFail} from "../../services/metrics";
 import {useEffect, useState} from "react";

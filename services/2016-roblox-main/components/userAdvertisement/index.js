@@ -1,7 +1,7 @@
 import { at } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import request, { getBaseUrl } from "../../lib/request";
+import request, { getBackendUrl } from "../../lib/request";
 import { adTypes } from "./constants";
 import Link from "../link";
 
@@ -35,7 +35,7 @@ const UserAdvertisement = props => {
 
   // I HATE IFRAMES I HATE IFRAMES I HATE IFRAMES I HATE IFRAMES
   useEffect(() => {
-    request('GET', `${getBaseUrl()}/user-sponsorship/${props.type}`).then(adData => {
+    request('GET', getBackendUrl(`/user-sponsorship/${props.type}`)).then(adData => {
       const doc = new DOMParser().parseFromString(adData.data, 'text/html');
       const imageElements = doc.getElementsByTagName('img');
       const aTags = doc.getElementsByTagName('a');

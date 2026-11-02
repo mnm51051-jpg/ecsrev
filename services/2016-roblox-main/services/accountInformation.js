@@ -1,4 +1,4 @@
-import request, { getBaseUrl, getFullUrl } from "../lib/request"
+import request, { getFullUrl } from "../lib/request"
 
 export const getUserRobloxBadges = ({ userId }) => {
   return request('GET', getFullUrl('accountinformation', `/v1/users/${userId}/roblox-badges`)).then(d => d.data)

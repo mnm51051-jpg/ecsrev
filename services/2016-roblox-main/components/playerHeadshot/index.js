@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { getBaseUrl } from "../../lib/request";
 import { reportImageFail } from "../../services/metrics";
 import { multiGetUserHeadshots } from "../../services/thumbnails";
 

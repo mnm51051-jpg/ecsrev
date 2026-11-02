@@ -1,4 +1,4 @@
-import request, { getBaseUrl, getFullUrl } from "../lib/request"
+import request, { getFullUrl } from "../lib/request"
 
 export const uploadAdvertisement = ({ file, name, targetId, type }) => {
   let formData = new FormData();

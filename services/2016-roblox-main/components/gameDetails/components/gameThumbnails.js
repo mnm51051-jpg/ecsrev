@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
 import { createUseStyles } from "react-jss";
-import { getBaseUrl } from "../../../lib/request";
 import GameDetailsStore from "../stores/gameDetailsStore";
 import {getGameMedia} from "../../../services/games";
 import {multiGetAssetThumbnails, multiGetUserThumbnails} from "../../../services/thumbnails";

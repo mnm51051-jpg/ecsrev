@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { logger } from "../../../lib/logger";
-import { getUrlWithProxy } from "../../../lib/request";
-import { getBaseUrl } from "../../../lib/request";
+import { getBackendUrl, getUrlWithProxy } from "../../../lib/request";
 
 const css = `
 a.list-header {
@@ -52,8 +51,7 @@ li.list-item {
 const MyFeed = props => {
   const [height, setHeight] = useState('auto');
   // TODO: would a flag be better? I guess automatically guessing is more convenient...
-  const shouldProxyRequest = getBaseUrl().startsWith(window.location.protocol + '//' + window.location.hostname) === false;
-  const feedFrameUrl = shouldProxyRequest ? (getUrlWithProxy(getBaseUrl() + '/Feeds/GetUserFeed')) : getBaseUrl() + '/Feeds/GetUserFeed';
+  const feedFrameUrl = getUrlWithProxy(getBackendUrl('/Feeds/GetUserFeed'));
 
   return <div>
     <iframe id='homepage-iframe-feed' height='100%' scrolling='no' style={{ width: '100%', height: height, overflow: 'hidden' }} src={feedFrameUrl} onLoad={() => {

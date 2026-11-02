@@ -1,5 +1,4 @@
-import request, { getBaseUrl } from "../lib/request"
-import { getFullUrl } from "../lib/request";
+import request, { getBackendUrl, getFullUrl } from "../lib/request";
 import getFlag from "../lib/getFlag";
 
 export const itemNameToEncodedName = (str) => {
@@ -80,11 +79,11 @@ export const getRecommendations = ({ assetId, assetTypeId, limit }) => {
 }
 
 export const getComments = async ({ assetId, offset }) => {
-  return request('GET', getBaseUrl() + 'comments/get-json?assetId=' + assetId + '&startIndex=' + offset + '&thumbnailWidth=100&thumbnailHeight=100&thumbnailFormat=PNG&cachebuster=' + Math.random()).then(d => d.data);
+  return request('GET', getBackendUrl('/comments/get-json?assetId=' + assetId + '&startIndex=' + offset + '&thumbnailWidth=100&thumbnailHeight=100&thumbnailFormat=PNG&cachebuster=' + Math.random())).then(d => d.data);
 }
 
 export const createComment = async ({ assetId, comment }) => {
-  let result = await request('POST', getBaseUrl() + 'comments/post', {
+  let result = await request('POST', getBackendUrl('/comments/post'), {
     text: comment,
     assetId: assetId,
   });
@@ -95,14 +94,14 @@ export const createComment = async ({ assetId, comment }) => {
 }
 
 export const addOrRemoveFromCollections = ({ assetId, addToProfile }) => {
-  return request('POST', getBaseUrl() + 'asset/toggle-profile', {
+  return request('POST', getBackendUrl('/asset/toggle-profile'), {
     assetId,
     addToProfile,
   })
 }
 
 export const deleteFromInventory = ({ assetId }) => {
-  return request ('POST', getBaseUrl() + "apisite/inventory/v1/delete-from-inventory", {
+  return request('POST', getBackendUrl('/apisite/inventory/v1/delete-from-inventory'), {
     assetId: assetId
   })
 }

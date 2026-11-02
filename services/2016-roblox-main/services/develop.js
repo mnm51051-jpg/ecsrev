@@ -1,5 +1,5 @@
 import getFlag from "../lib/getFlag";
-import request, { getBaseUrl, getFullUrl } from "../lib/request"
+import request, { getBackendUrl, getFullUrl } from "../lib/request"
 
 export const uploadAsset = ({ name, assetTypeId, file, groupId }) => {
   let formData = new FormData();
@@ -9,14 +9,14 @@ export const uploadAsset = ({ name, assetTypeId, file, groupId }) => {
   if (groupId) {
     formData.append('groupId', groupId);
   }
-  return request('POST', getBaseUrl() + 'develop/upload', formData);
+  return request('POST', getBackendUrl('/develop/upload'), formData);
 }
 
 export const uploadAssetVersion = ({assetId, file}) => {
   let form = new FormData();
   form.append('assetId', assetId);
   form.append('file', file);
-  return request('POST', getBaseUrl() + 'develop/upload-version', form);
+  return request('POST', getBackendUrl('/develop/upload-version'), form);
 }
 
 export const getCreatedAssetDetails = (assetIds) => {

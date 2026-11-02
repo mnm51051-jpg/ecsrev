@@ -2,7 +2,6 @@ import React from "react";
 import { createUseStyles } from "react-jss";
 import LoginModalStore from "../../../stores/loginModal";
 import LoginModal from "../../loginModal";
-import { getBaseUrl } from "../../../lib/request";
 
 const useLoginAreaStyles = createUseStyles({
   text: {
@@ -37,7 +36,7 @@ const LoginArea = () => {
       <div className='row'>
         <div className='col-6'>
           <p className={s.text}>
-            <a className={s.link} href={new URL('/auth/application', getBaseUrl()).toString()}>
+            <a className={s.link} href='/auth/application'>
               Sign Up
             </a>
           </p>

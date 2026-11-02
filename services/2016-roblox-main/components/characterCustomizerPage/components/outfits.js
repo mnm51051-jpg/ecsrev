@@ -2,7 +2,6 @@ import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import getFlag from "../../../lib/getFlag";
-import { getBaseUrl } from "../../../lib/request";
 import { deleteOutfit, getOutfits, renameOutfit, wearOutfit } from "../../../services/avatar";
 import { multiGetOutfitThumbnails } from "../../../services/thumbnails";
 import CharacterCustomizationStore from "../../../stores/characterPage";

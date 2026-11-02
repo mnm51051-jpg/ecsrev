@@ -1,5 +1,4 @@
-import request, { getBaseUrl } from "../lib/request"
-import { getFullUrl } from "../lib/request";
+import request, { getBackendUrl, getFullUrl } from "../lib/request";
 
 const baseUrl = getFullUrl('users', '');
 
@@ -33,7 +32,7 @@ export const getPreviousUsernames = async ({ userId }) => {
 }
 
 export const searchUsers = async ({keyword, limit, offset}) => {
-  return await request('GET', getBaseUrl() + 'search/users/results?keyword=' + (keyword||'') + '&maxRows='+limit+'&startIndex='+offset).then(d => d.data);
+  return await request('GET', getBackendUrl('search/users/results?keyword=' + (keyword||'') + '&maxRows='+limit+'&startIndex='+offset)).then(d => d.data);
 }
 
 export const getMembershipType = async ({userId}) => {

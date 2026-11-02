@@ -11,6 +11,7 @@ const useBuyButtonStyles = createUseStyles({
     margin: '0 auto',
     display: 'block',
     fontWeight: 'normal',
+    textDecoration: 'none',
     '&:disabled': {
       opacity: '0.5',
     },
@@ -30,14 +31,21 @@ const useBuyButtonStyles = createUseStyles({
 
 const ActionButton = props => {
   const s = useBuyButtonStyles();
+  const className = s.btn + ' ' + (props.className || s.defaultBg);
+  const title = props.disabled ? props.tooltipText : '';
+  const label = props.label || 'Buy Now';
 
   return <div className={props.divClassName}>
-    <button
-      type={props.type}
-      disabled={props.disabled}
-      className={s.btn + ' ' + (props.className || s.defaultBg)}
-      onClick={props.onClick}
-      title={props.disabled ? props.tooltipText : ''}>{props.label || 'Buy Now'}</button>
+    {props.href && !props.disabled ? (
+      <a href={props.href} className={className} title={title}>{label}</a>
+    ) : (
+      <button
+        type={props.type}
+        disabled={props.disabled}
+        className={className}
+        onClick={props.onClick}
+        title={title}>{label}</button>
+    )}
   </div>
 }
 

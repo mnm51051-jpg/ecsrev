@@ -1,5 +1,5 @@
 import { chunk, flatten } from "lodash";
-import request, { getBaseUrl, getFullUrl } from "../lib/request"
+import request, { getBackendUrl, getFullUrl } from "../lib/request"
 
 const toCsv = (str) => {
   if (typeof str === 'string') return str;
@@ -8,8 +8,8 @@ const toCsv = (str) => {
 
 const addBaseUrl = (arrayOfThumbs) => {
   return arrayOfThumbs.map(v => {
-    if (typeof v.imageUrl === 'string' && !v.imageUrl.startsWith('http')) {
-      v.imageUrl = getBaseUrl() + v.imageUrl;
+    if (typeof v.imageUrl === 'string' && !/^https?:\/\//i.test(v.imageUrl) && !v.imageUrl.startsWith('//')) {
+      v.imageUrl = getBackendUrl(v.imageUrl);
     }
     return v;
   })

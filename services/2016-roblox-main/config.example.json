@@ -4,7 +4,8 @@
   },
   "publicRuntimeConfig": {
     "backend": {
-      "proxyEnabled": true,
+      "proxyEnabled": false,
+      "sameOriginBackend": true,
       "flags": {
         "myAccountPage2016Enabled": true,
         "catalogGenreFilterSupported": true,
@@ -13,8 +14,8 @@
         "catalogDetailsPageResellerLimit": 10,
         "avatarPageInventoryLimit": 10
       },
-      "baseUrl": "http://localhost:5000",
-      "apiFormat": "http://localhost:5000/apisite/{0}{1}"
+      "baseUrl": "",
+      "apiFormat": "/apisite/{0}{1}"
     }
   }
 }

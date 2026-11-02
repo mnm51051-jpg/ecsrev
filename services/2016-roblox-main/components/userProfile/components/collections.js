@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { getBaseUrl } from "../../../lib/request";
+import { getBackendUrl } from "../../../lib/request";
 import {getItemUrl} from "../../../services/catalog";
 import { getCollections } from "../../../services/inventory";
 import useCardStyles from "../styles/card";
@@ -80,7 +80,7 @@ const Collections = props => {
               return <div className='col-4 col-lg-2' key={i}>
                 <a href={url}>
                   <div className={s.imageWrapper}>
-                    <img src={v.Thumbnail.Url.startsWith('http') ? v.Thumbnail.Url : getBaseUrl() + v.Thumbnail.Url} className={s.image}/>
+                    <img src={v.Thumbnail.Url.startsWith('http') ? v.Thumbnail.Url : getBackendUrl(v.Thumbnail.Url)} className={s.image}/>
                     {hasOverlay ? <div className={s.labelWrapper}>
                       {
                         isLimited ? <img className={s.overlayLimited} src='/img/limitedOverlay_itemPage.png' />

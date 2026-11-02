@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { getBaseUrl, getFullUrl } from "../../../../lib/request";
+import { getFullUrl } from "../../../../lib/request";
 import { getCreatedItems, uploadAsset } from "../../../../services/develop";
 import AuthenticationStore from "../../../../stores/authentication";
 import ActionButton from "../../../actionButton";

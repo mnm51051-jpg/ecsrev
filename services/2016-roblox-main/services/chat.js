@@ -1,5 +1,5 @@
 import getFlag from "../lib/getFlag";
-import request, { getBaseUrl, getFullUrl } from "../lib/request"
+import request, { getFullUrl } from "../lib/request"
 
 /**
  * Get chat settings for authenticated user

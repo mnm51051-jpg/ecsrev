@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { login } from '../../services/auth';
-import { getBaseUrl } from '../../lib/request';
 
 const useLoginModalStyles = createUseStyles({
   wrapper: {
@@ -95,14 +94,14 @@ const LoginModal = () => {
             <button type='submit' disabled={locked} className={`btn ${s.btnPrimary} ${s.btn}`}>Log In</button>
           </div>
           <div className='col-6'>
-            <a href={new URL('/auth/application', getBaseUrl()).toString()} className={`btn ${s.btnSecondary} ${s.btn}`}>Sign up</a>
+            <a href='/auth/application' className={`btn ${s.btnSecondary} ${s.btn}`}>Sign up</a>
           </div>
         </div>
       </form>
       <div className='row mt-2'>
         <div className='col-12'>
           <p>
-            <a className={s.forgotPass} href={new URL('/auth/password-reset', getBaseUrl()).toString()}>Forgot Password?</a>
+            <a className={s.forgotPass} href='/auth/password-reset'>Forgot Password?</a>
           </p>
         </div>
       </div>

@@ -2,7 +2,6 @@ import dayjs from "dayjs";
 import React, {useEffect, useRef, useState} from "react";
 import { createUseStyles } from "react-jss";
 import getFlag from "../../lib/getFlag";
-import { getBaseUrl } from "../../lib/request";
 import {getItemUrl, itemNameToEncodedName} from "../../services/catalog";
 import LimitedOverlay from "../catalogOverlays/limited";
 import LimitedUniqueOverlay from "../catalogOverlays/limitedUnique";

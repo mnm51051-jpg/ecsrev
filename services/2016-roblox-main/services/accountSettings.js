@@ -1,7 +1,7 @@
-import request, { getBaseUrl, getFullUrl } from "../lib/request"
+import request, { getBackendUrl, getFullUrl } from "../lib/request"
 
 export const getMySettingsJson = () => {
-  return request('GET', getBaseUrl() + '/my/settings/json').then(d => d.data);
+  return request('GET', getBackendUrl('/my/settings/json')).then(d => d.data);
 }
 
 export const getMyEmail = () => {

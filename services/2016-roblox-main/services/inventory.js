@@ -1,5 +1,4 @@
-import request, { getBaseUrl } from "../lib/request"
-import { getFullUrl } from "../lib/request";
+import request, { getBackendUrl, getFullUrl } from "../lib/request";
 
 const baseUrl = getFullUrl('inventory', '');
 
@@ -15,11 +14,11 @@ export const getOwnedCopies = ({ assetId, userId }) => {
 }
 
 export const getInventory = ({ userId, limit, cursor, assetTypeId }) => {
-  return request('GET', getBaseUrl() + `users/inventory/list-json?userId=${userId}&assetTypeId=${assetTypeId}&cursor=${encodeURIComponent(cursor || '')}&itemsPerPage=${limit}`).then(d => d.data);
+  return request('GET', getBackendUrl(`/users/inventory/list-json?userId=${userId}&assetTypeId=${assetTypeId}&cursor=${encodeURIComponent(cursor || '')}&itemsPerPage=${limit}`)).then(d => d.data);
 }
 
 export const getFavorites = ({ userId, limit, cursor, assetTypeId }) => {
-  return request('GET', getBaseUrl() + `users/favorites/list-json?userId=${userId}&assetTypeId=${assetTypeId}&pageNumber=${cursor || 1}&itemsPerPage=${limit}`).then(d => d.data).then(d => {
+  return request('GET', getBackendUrl(`/users/favorites/list-json?userId=${userId}&assetTypeId=${assetTypeId}&pageNumber=${cursor || 1}&itemsPerPage=${limit}`)).then(d => d.data).then(d => {
     // we have to add cursors because roblox uses pageNumber for this endpoint.
     d.Data.nextPageCursor = cursor + 1;
     d.Data.previousPageCursor = cursor - 1;
@@ -28,7 +27,7 @@ export const getFavorites = ({ userId, limit, cursor, assetTypeId }) => {
 }
 
 export const getCollections = ({ userId }) => {
-  return request('GET', getBaseUrl() + `users/profile/robloxcollections-json?userId=${userId}`).then(d => d.data.CollectionsItems)
+  return request('GET', getBackendUrl(`/users/profile/robloxcollections-json?userId=${userId}`)).then(d => d.data.CollectionsItems)
 }
 
 export const getCollectibleInventory = ({ userId, cursor, limit, assetTypeId = 'null' }) => {

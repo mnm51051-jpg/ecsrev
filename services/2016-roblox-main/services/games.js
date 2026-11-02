@@ -1,5 +1,5 @@
 import getFlag from "../lib/getFlag";
-import request, { getBaseUrl, getFullUrl } from "../lib/request"
+import request, { getBackendUrl, getFullUrl } from "../lib/request"
 import { itemNameToEncodedName } from "./catalog";
 const gamePage2015Enabled = getFlag('2015GameDetailsPageEnabled', false);
 const csrEnabled = getFlag('clientSideRenderingEnabled', false);
@@ -29,7 +29,7 @@ export const getGameMedia = ({ universeId }) => {
 }
 
 export const launchGame = async ({ placeId }) => {
-  const result = await request('GET', getBaseUrl() + '/game/get-join-script?placeId=' + encodeURIComponent(placeId));
+  const result = await request('GET', getBackendUrl('/game/get-join-script?placeId=' + encodeURIComponent(placeId)));
   const toClick = result.data.joinUrl;
   const aTag = document.createElement('a');
   aTag.setAttribute('href', result.data.prefix + '' + result.data.joinScriptUrl);
@@ -50,7 +50,7 @@ export const multiGetUniverseDetails = ({ universeIds }) => {
 }
 
 export const getServers = ({ placeId, offset }) => {
-  return request('GET', getBaseUrl() + `/games/getgameinstancesjson?placeId=${placeId}&startIndex=${offset}`).then(d => d.data);
+  return request('GET', getBackendUrl(`/games/getgameinstancesjson?placeId=${placeId}&startIndex=${offset}`)).then(d => d.data);
 }
 
 export const multiGetGameVotes = ({universeIds}) => {

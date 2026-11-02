@@ -2,6 +2,19 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const configPath = path.join(__dirname, '../config.json');
+const isVercelDeployment = process.env.VERCEL === '1';
+const vercelDomain = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
+const normalizedVercelDomain = typeof vercelDomain === 'string'
+  ? vercelDomain.trim().replace(/^https?:\/\//i, '').replace(/\/+$/, '')
+  : '';
+const backendBaseUrl = isVercelDeployment && normalizedVercelDomain
+  ? `https://${normalizedVercelDomain}`
+  : isVercelDeployment
+    ? ''
+    : 'http://localhost:5000';
+const apiFormat = isVercelDeployment
+  ? '/apisite/{0}{1}'
+  : `${backendBaseUrl}/apisite/{0}{1}`;
 
 const main = () => {
   if (fs.existsSync(configPath)) {
@@ -16,7 +29,8 @@ const main = () => {
     },
     "publicRuntimeConfig": {
       "backend": {
-        proxyEnabled: true,
+        proxyEnabled: !isVercelDeployment,
+        sameOriginBackend: isVercelDeployment,
         flags: {
           myAccountPage2016Enabled: true,
           catalogGenreFilterSupported: false,
@@ -33,8 +47,8 @@ const main = () => {
           avatarPageOutfitCreatedAtAvailable: false,
           catalogDetailsPageOwnersTabEnabled: false,
         },
-        "baseUrl": "http://localhost:5000",
-        "apiFormat": "http://localhost:5000/apisite/{0}{1}"
+        "baseUrl": backendBaseUrl,
+        "apiFormat": apiFormat
       }
     },
   }));
