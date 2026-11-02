@@ -33,8 +33,8 @@ const main = () => {
           avatarPageOutfitCreatedAtAvailable: false,
           catalogDetailsPageOwnersTabEnabled: false,
         },
-        "baseUrl": "https://www.roblox.com",
-        "apiFormat": "https://{0}.roblox.com{1}"
+        "baseUrl": "http://localhost:5000",
+        "apiFormat": "http://localhost:5000/apisite/{0}{1}"
       }
     },
   }));

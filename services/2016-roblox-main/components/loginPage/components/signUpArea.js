@@ -1,5 +1,6 @@
 import { createUseStyles } from "react-jss";
 import ActionButton from "../../actionButton";
+import { getBaseUrl } from "../../../lib/request";
 
 const useStyles = createUseStyles({
     header: {
@@ -22,7 +23,7 @@ const SignUpArea = props => {
             <p className={s.notAMemberText}>Not a member?</p>
             <h2 className={s.header}>Sign Up to Build & Make Friends</h2>
             <ActionButton label='Sign Up' onClick={(e) => {
-                window.location.href = '/account/signupredir';
+                window.location.assign(new URL('/auth/application', getBaseUrl()).toString());
             }}></ActionButton>
         </div>
     </div>

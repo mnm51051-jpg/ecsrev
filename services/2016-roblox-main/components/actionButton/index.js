@@ -33,6 +33,7 @@ const ActionButton = props => {
 
   return <div className={props.divClassName}>
     <button
+      type={props.type}
       disabled={props.disabled}
       className={s.btn + ' ' + (props.className || s.defaultBg)}
       onClick={props.onClick}

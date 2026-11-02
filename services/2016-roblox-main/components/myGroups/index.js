@@ -21,7 +21,6 @@ const useStyles = createUseStyles({
 })
 
 const MyGroups = props => {
-  console.log('props',props);
   const s = useStyles();
 
   const store = MyGroupsStore.useContainer();

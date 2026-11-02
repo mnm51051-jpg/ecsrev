@@ -1,10 +1,10 @@
 const fs = require('fs');
 const path = require('path');
-const configPath = path.join(__dirname, path.sep + 'config.json');
-if (!fs.existsSync(configPath)) {
-  throw new Error('Configuration could not be found at location: ' + configPath);
-}
-const config = JSON.parse(fs.readFileSync(configPath).toString('utf-8'));
+const configPath = path.join(__dirname, 'config.json');
+const configFilePath = fs.existsSync(configPath)
+  ? configPath
+  : path.join(__dirname, 'config.example.json');
+const config = JSON.parse(fs.readFileSync(configFilePath, 'utf-8'));
 
 module.exports = {
   reactStrictMode: true,
@@ -30,6 +30,18 @@ module.exports = {
         permanent: false,
       },
     ]
+  },
+  async headers() {
+    const securityHeaders = [
+      { key: 'X-Content-Type-Options', value: 'nosniff' },
+      { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+      { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+      { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+    ];
+    if (process.env.NODE_ENV === 'production') {
+      securityHeaders.push({ key: 'Strict-Transport-Security', value: 'max-age=63072000' });
+    }
+    return [{ source: '/:path*', headers: securityHeaders }];
   },
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     return config
